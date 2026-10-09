@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Projects · Matthew Kuryla</title>
+  <meta name="description" content="Roblox games Matthew Kuryla has worked on, with live player counts and all-time plays.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <nav class="nav">
+    <div class="container">
+      <a class="brand" href="index.html">Matthew Kuryla</a>
+      <div class="nav-links">
+        <a href="index.html">Resume</a>
+        <a href="projects.html" class="active">Projects</a>
+        <a href="index.html#contact">Contact</a>
+      </div>
+    </div>
+  </nav>
+
+  <header class="hero" style="padding-bottom: 32px;">
+    <div class="container">
+      <span class="eyebrow">Roblox Projects</span>
+      <h1>Games I've worked on</h1>
+      <p class="lead">A selection of Roblox games I've helped build, grow, and monetize, ranked by live player count and then all-time plays.</p>
+    </div>
+  </header>
+
+  <section style="padding-top: 0;">
+    <div class="container">
+      <div class="live-panel">
+        <div class="card live-box">
+          <div class="label"><span class="live-dot off"></span>Total all-time plays</div>
+          <div class="big" id="total-visits">0</div>
+        </div>
+        <div class="card live-box">
+          <div class="label"><span class="live-dot off"></span>Playing right now</div>
+          <div class="big" id="total-playing">0</div>
+        </div>
+      </div>
+      <p class="updated" id="updated">Loading live stats…</p>
+      <div class="games" id="games"></div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="container">© <span id="year"></span> Matthew Kuryla</div>
+  </footer>
+
+  <script>document.getElementById("year").textContent = new Date().getFullYear();</script>
+  <script src="games.js"></script>
+  <script src="projects.js"></script>
+</body>
+</html>
