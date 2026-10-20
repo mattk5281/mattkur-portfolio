@@ -1,5 +1,10 @@
 const REFRESH_MS = 30000;
-const TIMEOUT_MS = 6000;
+const TIMEOUT_MS = 5000;
+const RETRY_DELAYS = [0, 250, 500, 1000, 1500, 2500, 4000];
+const CACHE_KEY = "mk-stats-v1";
+const THUMB_KEY = "mk-thumbs-v1";
+const CACHE_MAX_AGE = 120000;
+const THUMB_MAX_AGE = 86400000;
 const GAMES_API = "https://games.roproxy.com/v1/games?universeIds=";
 const THUMBS_API = "https://thumbnails.roproxy.com/v1/games/multiget/thumbnails?size=768x432&format=Png&countPerUniverse=1&universeIds=";
 
@@ -16,6 +21,12 @@ const fmt = n => (n == null ? "—" : n.toLocaleString("en-US"));
 const ids = state.map(g => g.universeId).join(",");
 const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 const shown = new WeakMap();
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+const store = {
+  get(k) { try { return JSON.parse(localStorage.getItem(k)); } catch (e) { return null; } },
+  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+};
+let lastUpdated = null;
 
 function setNum(el, target, animate) {
   el.classList.remove("pending");
@@ -114,7 +125,7 @@ function renderTotals(live) {
   document.querySelectorAll(".total-dot").forEach(d => d.classList.toggle("off", !live));
   const note = document.getElementById("live-note");
   if (note) {
-    const time = new Date().toLocaleTimeString([], { hour: "numeric", minute: "2-digit", second: "2-digit" });
+    const time = new Date(lastUpdated || Date.now()).toLocaleTimeString([], { hour: "numeric", minute: "2-digit", second: "2-digit" });
     note.innerHTML = live
       ? `<span class="live-dot"></span>Live from Roblox · updated ${time} · refreshes every ${REFRESH_MS / 1000}s`
       : `<span class="live-dot off"></span>Live player counts unavailable right now · showing saved play totals`;
@@ -141,33 +152,57 @@ async function getJSON(url) {
   }
 }
 
-async function loadStats() {
-  try {
-    const { data } = await getJSON(GAMES_API + ids);
-    data.forEach(d => {
-      const g = state.find(x => x.universeId === d.id);
-      if (!g) return;
-      g.playing = d.playing ?? 0;
-      g.visits = d.visits ?? g.visits;
-      g.studio = d.creator?.name ?? g.studio;
-    });
-    return true;
-  } catch (e) {
-    return false;
+function applyStats(data) {
+  data.forEach(d => {
+    const g = state.find(x => x.universeId === d.id);
+    if (!g) return;
+    g.playing = d.playing ?? 0;
+    g.visits = d.visits ?? g.visits;
+    g.studio = d.creator?.name ?? g.studio;
+  });
+}
+
+async function loadStats(delays = RETRY_DELAYS) {
+  for (const wait of delays) {
+    if (wait) await sleep(wait);
+    try {
+      const { data } = await getJSON(GAMES_API + ids);
+      if (!Array.isArray(data) || !data.length) throw new Error("empty");
+      applyStats(data);
+      lastUpdated = Date.now();
+      store.set(CACHE_KEY, { t: lastUpdated, data: data.map(d => ({ id: d.id, playing: d.playing, visits: d.visits, creator: { name: d.creator?.name } })) });
+      return true;
+    } catch (e) {}
   }
+  return false;
+}
+
+function applyThumbs(map) {
+  state.forEach(g => { if (map[g.universeId]) g.thumb = map[g.universeId]; });
+  state.forEach(addThumb);
+  renderHeroBg();
 }
 
 async function loadThumbs() {
-  try {
-    const { data } = await getJSON(THUMBS_API + ids);
-    data.forEach(d => {
-      const g = state.find(x => x.universeId === d.universeId);
-      const t = d.thumbnails && d.thumbnails[0];
-      if (g && t && t.state === "Completed") g.thumb = t.imageUrl;
-    });
-    state.forEach(addThumb);
-    renderHeroBg();
-  } catch (e) {}
+  const cached = store.get(THUMB_KEY);
+  if (cached && cached.map && Date.now() - cached.t < THUMB_MAX_AGE) {
+    applyThumbs(cached.map);
+    return;
+  }
+  for (const wait of [0, 800, 2000]) {
+    if (wait) await sleep(wait);
+    try {
+      const { data } = await getJSON(THUMBS_API + ids);
+      const map = {};
+      data.forEach(d => {
+        const t = d.thumbnails && d.thumbnails[0];
+        if (t && t.state === "Completed") map[d.universeId] = t.imageUrl;
+      });
+      store.set(THUMB_KEY, { t: Date.now(), map });
+      applyThumbs(map);
+      return;
+    } catch (e) {}
+  }
 }
 
 function setupReveal() {
@@ -187,18 +222,31 @@ function setupReveal() {
   items.forEach(el => io.observe(el));
 }
 
+async function refresh() {
+  if (!document.hidden && await loadStats([0, 1000, 2500])) {
+    renderGames(true);
+    renderTotals(true);
+  }
+  setTimeout(refresh, lastUpdated ? REFRESH_MS : 8000);
+}
+
 (async () => {
   document.querySelectorAll(".year").forEach(el => (el.textContent = new Date().getFullYear()));
   setupReveal();
-  showSkeletons();
+  const cached = store.get(CACHE_KEY);
+  if (cached && Array.isArray(cached.data) && Date.now() - cached.t < CACHE_MAX_AGE) {
+    applyStats(cached.data);
+    lastUpdated = cached.t;
+    renderGames(true);
+    renderTotals(true);
+  } else {
+    showSkeletons();
+  }
   loadThumbs();
   const live = await loadStats();
-  renderGames(live);
-  renderTotals(live);
-  setInterval(async () => {
-    if (await loadStats()) {
-      renderGames(true);
-      renderTotals(true);
-    }
-  }, REFRESH_MS);
+  if (live || !lastUpdated) {
+    renderGames(live);
+    renderTotals(live);
+  }
+  setTimeout(refresh, live ? REFRESH_MS : 8000);
 })();
