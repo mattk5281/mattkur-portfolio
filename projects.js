@@ -1,42 +1,43 @@
 const REFRESH_MS = 30000;
+const TIMEOUT_MS = 6000;
 const GAMES_API = "https://games.roproxy.com/v1/games?universeIds=";
 const THUMBS_API = "https://thumbnails.roproxy.com/v1/games/multiget/thumbnails?size=768x432&format=Png&countPerUniverse=1&universeIds=";
 
 const state = GAMES.map(g => ({
   ...g,
-  playing: g.fallback.playing,
+  playing: null,
   visits: g.fallback.visits,
   studio: g.fallback.studio,
   thumb: null,
   el: null
 }));
 
-const fmt = n => n.toLocaleString("en-US");
+const fmt = n => (n == null ? "—" : n.toLocaleString("en-US"));
 const ids = state.map(g => g.universeId).join(",");
 const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 const shown = new WeakMap();
 
-function countTo(el, target) {
+function setNum(el, target, animate) {
+  el.classList.remove("pending");
   const start = shown.get(el) ?? 0;
-  if (reduceMotion || start === target) {
+  shown.set(el, target);
+  if (!animate || reduceMotion || document.hidden || start === target) {
     el.textContent = fmt(target);
-    shown.set(el, target);
     return;
   }
   const t0 = performance.now();
-  const dur = start === 0 ? 1600 : 900;
+  const dur = start === 0 ? 1200 : 700;
   function step(now) {
     const p = Math.min(1, (now - t0) / dur);
     const eased = 1 - Math.pow(1 - p, 3);
     el.textContent = fmt(Math.round(start + (target - start) * eased));
     if (p < 1) requestAnimationFrame(step);
   }
-  shown.set(el, target);
   requestAnimationFrame(step);
 }
 
 function sorted() {
-  return [...state].sort((a, b) => b.playing - a.playing || b.visits - a.visits);
+  return [...state].sort((a, b) => (b.playing ?? -1) - (a.playing ?? -1) || b.visits - a.visits);
 }
 
 function buildCard(g) {
@@ -57,10 +58,21 @@ function buildCard(g) {
         <div class="now"><strong class="s-playing"></strong>playing now</div>
         <div><strong class="s-visits"></strong>all-time plays</div>
       </div>
-      ${g.bio ? `<p class="bio">${g.bio}</p>` : ""}
+      ${g.bio ? `<div class="role-label">What I did</div><p class="bio">${g.bio}</p>` : ""}
       <a class="game-link" href="${url}" target="_blank" rel="noopener">Play on Roblox <span>↗</span></a>
     </div>`;
   return el;
+}
+
+function addThumb(g) {
+  if (!g.el || !g.thumb) return;
+  const thumb = g.el.querySelector(".thumb");
+  if (thumb.querySelector("img")) return;
+  const img = document.createElement("img");
+  img.src = g.thumb;
+  img.alt = `${g.title} thumbnail`;
+  img.loading = "lazy";
+  thumb.prepend(img);
 }
 
 function updateCard(g, rank, live) {
@@ -71,15 +83,15 @@ function updateCard(g, rank, live) {
   q(".s-playing").textContent = fmt(g.playing);
   q(".s-visits").textContent = fmt(g.visits);
   q(".studio").textContent = g.studio;
-  q(".badge .live-dot").classList.toggle("off", !live || g.playing === 0);
-  const thumb = q(".thumb");
-  if (g.thumb && !thumb.querySelector("img")) {
-    const img = document.createElement("img");
-    img.src = g.thumb;
-    img.alt = `${g.title} thumbnail`;
-    img.loading = "lazy";
-    thumb.prepend(img);
-  }
+  q(".badge .live-dot").classList.toggle("off", !live || !g.playing);
+  addThumb(g);
+}
+
+function showSkeletons() {
+  const box = document.getElementById("games");
+  if (!box) return;
+  const count = Number(box.dataset.limit) || state.length;
+  box.innerHTML = Array.from({ length: count }, () => `<div class="game skeleton"><div class="thumb"></div></div>`).join("");
 }
 
 function renderGames(live) {
@@ -94,18 +106,18 @@ function renderGames(live) {
   box.replaceChildren(...list);
 }
 
-function renderTotals(live, showNote) {
+function renderTotals(live) {
   const visits = state.reduce((s, g) => s + g.visits, 0);
-  const playing = state.reduce((s, g) => s + g.playing, 0);
-  document.querySelectorAll('[data-total="visits"]').forEach(el => countTo(el, visits));
-  document.querySelectorAll('[data-total="playing"]').forEach(el => countTo(el, playing));
+  const playing = live ? state.reduce((s, g) => s + (g.playing || 0), 0) : null;
+  document.querySelectorAll('[data-total="visits"]').forEach(el => setNum(el, visits, true));
+  document.querySelectorAll('[data-total="playing"]').forEach(el => setNum(el, playing, false));
   document.querySelectorAll(".total-dot").forEach(d => d.classList.toggle("off", !live));
   const note = document.getElementById("live-note");
-  if (note && showNote) {
+  if (note) {
     const time = new Date().toLocaleTimeString([], { hour: "numeric", minute: "2-digit", second: "2-digit" });
     note.innerHTML = live
       ? `<span class="live-dot"></span>Live from Roblox · updated ${time} · refreshes every ${REFRESH_MS / 1000}s`
-      : `<span class="live-dot off"></span>Showing last saved stats · live data unavailable right now`;
+      : `<span class="live-dot off"></span>Live player counts unavailable right now · showing saved play totals`;
   }
 }
 
@@ -117,20 +129,25 @@ function renderHeroBg() {
   bg.innerHTML = Array.from({ length: 9 }, (_, i) => `<div style="background-image:url('${pics[i % pics.length]}')"></div>`).join("");
 }
 
-function render(live, note = true) {
-  renderGames(live);
-  renderTotals(live, note);
+async function getJSON(url) {
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), TIMEOUT_MS);
+  try {
+    const res = await fetch(url, { signal: ctrl.signal, cache: "no-store" });
+    if (!res.ok) throw new Error(res.status);
+    return await res.json();
+  } finally {
+    clearTimeout(timer);
+  }
 }
 
 async function loadStats() {
   try {
-    const res = await fetch(GAMES_API + ids);
-    if (!res.ok) throw new Error(res.status);
-    const { data } = await res.json();
+    const { data } = await getJSON(GAMES_API + ids);
     data.forEach(d => {
       const g = state.find(x => x.universeId === d.id);
       if (!g) return;
-      g.playing = d.playing ?? g.playing;
+      g.playing = d.playing ?? 0;
       g.visits = d.visits ?? g.visits;
       g.studio = d.creator?.name ?? g.studio;
     });
@@ -142,14 +159,14 @@ async function loadStats() {
 
 async function loadThumbs() {
   try {
-    const res = await fetch(THUMBS_API + ids);
-    if (!res.ok) return;
-    const { data } = await res.json();
+    const { data } = await getJSON(THUMBS_API + ids);
     data.forEach(d => {
       const g = state.find(x => x.universeId === d.universeId);
       const t = d.thumbnails && d.thumbnails[0];
       if (g && t && t.state === "Completed") g.thumb = t.imageUrl;
     });
+    state.forEach(addThumb);
+    renderHeroBg();
   } catch (e) {}
 }
 
@@ -173,9 +190,15 @@ function setupReveal() {
 (async () => {
   document.querySelectorAll(".year").forEach(el => (el.textContent = new Date().getFullYear()));
   setupReveal();
-  render(false, false);
-  const [live] = await Promise.all([loadStats(), loadThumbs()]);
-  renderHeroBg();
-  render(live);
-  setInterval(async () => render(await loadStats()), REFRESH_MS);
+  showSkeletons();
+  loadThumbs();
+  const live = await loadStats();
+  renderGames(live);
+  renderTotals(live);
+  setInterval(async () => {
+    if (await loadStats()) {
+      renderGames(true);
+      renderTotals(true);
+    }
+  }, REFRESH_MS);
 })();
