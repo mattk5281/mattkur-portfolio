@@ -3,123 +3,107 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Matthew Kuryla</title>
+  <title>Matthew Kuryla · Analytics & Roblox Development</title>
   <meta name="description" content="Matthew Kuryla: marketing & business analytics student at the University of Nebraska-Lincoln and independent Roblox game developer with 45M+ plays.">
+  <meta name="theme-color" content="#070d1f">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <nav class="nav">
     <div class="container">
-      <a class="brand" href="index.html">Matthew Kuryla</a>
+      <a class="brand" href="index.html"><span class="mono">MK</span><span class="name">Matthew Kuryla</span></a>
       <div class="nav-links">
-        <a href="index.html" class="active">Resume</a>
         <a href="projects.html">Projects</a>
-        <a href="#contact">Contact</a>
+        <a href="#experience">Experience</a>
+        <a href="#skills">Skills</a>
+        <a class="btn btn-primary" href="#contact">Get in touch</a>
       </div>
     </div>
   </nav>
 
   <header class="hero">
+    <div class="hero-bg" id="hero-bg" aria-hidden="true"></div>
     <div class="container">
       <span class="eyebrow">Marketing &amp; Business Analytics · UNL '27</span>
-      <h1>Matthew Kuryla</h1>
-      <p class="lead">Business analytics student and independent Roblox game developer. Since 2019 I've used player data, A/B tested ad campaigns, and in-game economy design to grow games to over 45 million plays.</p>
+      <h1>Matthew Kuryla.<br><span class="grad">Growing games with data.</span></h1>
+      <p class="lead">Business analytics student and independent Roblox developer. Since 2019 I've used player data, A/B tested ad campaigns, and in-game economy design to help games reach tens of millions of plays.</p>
       <div class="btn-row">
-        <a class="btn btn-primary" href="projects.html">View my games</a>
-        <a class="btn btn-ghost" href="#experience">Read resume</a>
+        <a class="btn btn-primary" href="projects.html">See my games →</a>
+        <a class="btn btn-ghost" href="https://www.linkedin.com/in/matthew-kuryla/" target="_blank" rel="noopener">LinkedIn</a>
       </div>
-      <div class="stats-strip">
-        <div class="stat"><div class="num">45M+</div><div class="label">All-time plays across 7+ games</div></div>
-        <div class="stat"><div class="num">6+ years</div><div class="label">Building and running games on Roblox</div></div>
-        <div class="stat"><div class="num">3.61</div><div class="label">Cumulative GPA</div></div>
+      <div class="hero-stats">
+        <div>
+          <div class="stat-num" data-total="visits">0</div>
+          <div class="stat-label"><span class="live-dot off total-dot"></span>All-time plays across my games</div>
+        </div>
+        <div>
+          <div class="stat-num" data-total="playing">0</div>
+          <div class="stat-label"><span class="live-dot off total-dot"></span>Playing right now</div>
+        </div>
+        <div>
+          <div class="stat-num">6+ yrs</div>
+          <div class="stat-label">Building on Roblox</div>
+        </div>
       </div>
     </div>
   </header>
 
-  <section id="education">
+  <div class="marquee" aria-hidden="true">
+    <div class="marquee-track">
+      <span>Funnel Analysis</span><span>A/B Testing</span><span>Advertising</span><span>Project Management</span><span>Database Management</span><span>Power BI</span><span>Tableau</span><span>PostgreSQL</span><span>Roblox Studio</span>
+      <span>Funnel Analysis</span><span>A/B Testing</span><span>Advertising</span><span>Project Management</span><span>Database Management</span><span>Power BI</span><span>Tableau</span><span>PostgreSQL</span><span>Roblox Studio</span>
+    </div>
+  </div>
+
+  <section id="games-preview">
     <div class="container">
-      <h2 class="section-title">Education</h2>
-      <p class="section-sub">Lincoln, NE</p>
-      <div class="edu-grid">
-        <div class="card entry">
-          <div class="entry-head">
-            <h3>University of Nebraska-Lincoln</h3>
-            <span class="date">May 2027</span>
-          </div>
-          <div class="org">Bachelor of Science in Business Administration</div>
-          <ul>
-            <li>Major: Marketing &amp; Business Analytics</li>
-          </ul>
+      <div class="section-head reveal">
+        <div>
+          <span class="eyebrow"><span class="num">01</span> Top games</span>
+          <h2>Games I've worked on</h2>
         </div>
-        <div class="card edu-meta">
-          <div class="num">3.61 / 4.00</div>
-          <div class="org">Cumulative GPA</div>
-        </div>
+        <a class="btn btn-ghost" href="projects.html">View all projects →</a>
       </div>
+      <div class="games-grid three" id="games" data-limit="3"></div>
     </div>
   </section>
 
-  <section id="experience">
+  <section id="experience" class="light">
     <div class="container">
-      <h2 class="section-title">Experience</h2>
-      <p class="section-sub">Data, growth, and project management.</p>
-      <div class="timeline">
-        <article class="card entry">
-          <div class="entry-head">
-            <h3>Independent Game Developer <span class="org">· Roblox, Remote</span></h3>
-            <span class="date">Dec 2019 – Present</span>
-          </div>
-          <ul>
-            <li>Analyze high-volume user and performance data across 7+ games generating 45,000,000+ all-time plays, identifying trends, engagement bottlenecks, and points of user drop-off to improve performance.</li>
-            <li>Implement engagement funnels and in-game economy events to evaluate performance metrics, identify optimization opportunities, and improve user retention and monetization.</li>
-            <li>Design and analyze A/B style advertising campaigns, running up to 5 campaigns per game and evaluating conversion and performance metrics to optimize advertising spend.</li>
-            <li>Manage cross-functional projects with external developers by defining requirements, establishing timelines, communicating priorities, and ensuring that deliverables align with performance objectives.</li>
-          </ul>
-        </article>
-        <article class="card entry">
-          <div class="entry-head">
-            <h3>Data Intern <span class="org">· PEAK6, Chicago, IL</span></h3>
-            <span class="date">Jul 2022 – Aug 2022</span>
-          </div>
-          <ul>
-            <li>Extracted, cleaned, organized, and validated data from LinkedIn to build and maintain an Excel-based database supporting development of an internal application.</li>
-            <li>Performed data quality checks and standardized data to improve accuracy, consistency, and usability.</li>
-            <li>Collaborated with the project manager through daily check-ins to clarify requirements, prioritize tasks, communicate progress, and ensure timely completion of deliverables.</li>
-          </ul>
-        </article>
+      <div class="section-head reveal">
+        <div>
+          <span class="eyebrow"><span class="num">02</span> Experience</span>
+          <h2>Data, growth, and project management.</h2>
+        </div>
       </div>
-    </div>
-  </section>
-
-  <section id="involvement">
-    <div class="container">
-      <h2 class="section-title">Involvement</h2>
-      <p class="section-sub">Leadership and community on campus.</p>
       <div class="timeline">
-        <article class="card entry">
-          <div class="entry-head">
-            <h3>Founding Member <span class="org">· Nebraska Commercial Real Estate</span></h3>
-            <span class="date">Mar 2026 – Present</span>
+        <article class="entry reveal">
+          <div class="when"><strong>Dec 2019 – Present</strong>Remote</div>
+          <div>
+            <h3>Roblox</h3>
+            <div class="role">Independent Game Developer</div>
+            <ul>
+              <li>Analyze high-volume user and performance data across 7+ games generating 45,000,000+ all-time plays, identifying trends, engagement bottlenecks, and points of user drop-off to improve performance.</li>
+              <li>Implement engagement funnels and in-game economy events to evaluate performance metrics, identify optimization opportunities, and improve user retention and monetization.</li>
+              <li>Design and analyze A/B style advertising campaigns, running up to 5 campaigns per game and evaluating conversion and performance metrics to optimize advertising spend.</li>
+              <li>Manage cross-functional projects with external developers by defining requirements, establishing timelines, communicating priorities, and ensuring that deliverables align with performance objectives.</li>
+            </ul>
           </div>
-          <ul>
-            <li>Help establish and promote a new commercial real estate organization, contributing to its rapid growth through outreach to students across academic and Greek organizations.</li>
-            <li>Engage with commercial real estate professionals through networking and speaking events to develop knowledge of real estate investment, financial analysis, and business strategy.</li>
-            <li>Build professional relationships with industry professionals and peers while representing the organization at campus events.</li>
-          </ul>
         </article>
-        <article class="card entry">
-          <div class="entry-head">
-            <h3>Member <span class="org">· Delta Tau Delta</span></h3>
-            <span class="date">Apr 2024 – Present</span>
+        <article class="entry reveal">
+          <div class="when"><strong>Jul 2022 – Aug 2022</strong>Chicago, IL</div>
+          <div>
+            <h3>PEAK6</h3>
+            <div class="role">Data Intern</div>
+            <ul>
+              <li>Extracted, cleaned, organized, and validated data from LinkedIn to build and maintain an Excel-based database supporting development of an internal application.</li>
+              <li>Performed data quality checks and standardized data to improve accuracy, consistency, and usability.</li>
+              <li>Collaborated with the project manager through daily check-ins to clarify requirements, prioritize tasks, communicate progress, and ensure timely completion of deliverables.</li>
+            </ul>
           </div>
-          <ul>
-            <li>Support 3+ philanthropy events by coordinating fundraising efforts and selling 5+ tickets per event to support JDRF and Lincoln Veteran Affairs.</li>
-            <li>Serve on the ritual education team, helping prepare and present ceremonies for the formal initiation of 31 new members.</li>
-            <li>Participate in weekly chapter meetings and contribute to discussions regarding chapter initiatives, events, and organizational improvement.</li>
-          </ul>
         </article>
       </div>
     </div>
@@ -127,37 +111,109 @@
 
   <section id="skills">
     <div class="container">
-      <h2 class="section-title">Skills</h2>
-      <p class="section-sub">Tools I use day to day.</p>
-      <div class="chips">
-        <span class="chip">Microsoft Excel</span>
-        <span class="chip">Microsoft PowerPoint</span>
-        <span class="chip">Microsoft Word</span>
-        <span class="chip">Tableau</span>
-        <span class="chip">Power BI</span>
-        <span class="chip">RStudio</span>
-        <span class="chip">Roblox Studio</span>
-        <span class="chip">A/B Testing</span>
-        <span class="chip">Funnel Analysis</span>
+      <div class="section-head reveal">
+        <div>
+          <span class="eyebrow"><span class="num">03</span> Education &amp; skills</span>
+          <h2>The toolkit.</h2>
+        </div>
+      </div>
+      <div class="split">
+        <div class="panel reveal">
+          <span class="eyebrow">Education · May 2027</span>
+          <h3>University of Nebraska-Lincoln</h3>
+          <div class="sub">Bachelor of Science in Business Administration<br>Major: Marketing &amp; Business Analytics</div>
+          <div class="gpa"><strong>3.61</strong><span>/ 4.00 cumulative GPA</span></div>
+        </div>
+        <div class="panel reveal">
+          <div class="skill-group">
+            <span class="eyebrow">Software</span>
+            <div class="chips">
+              <span class="chip">Microsoft Excel</span>
+              <span class="chip">Microsoft PowerPoint</span>
+              <span class="chip">Tableau</span>
+              <span class="chip">Power BI</span>
+              <span class="chip">RStudio</span>
+              <span class="chip">PostgreSQL</span>
+              <span class="chip">Roblox Studio</span>
+            </div>
+          </div>
+          <div class="skill-group">
+            <span class="eyebrow">Skills</span>
+            <div class="chips">
+              <span class="chip accent">Project Management</span>
+              <span class="chip accent">Database Management</span>
+              <span class="chip accent">Funnel Analysis</span>
+              <span class="chip accent">Advertising</span>
+              <span class="chip accent">A/B Testing</span>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </section>
 
-  <section id="contact" class="contact">
+  <section id="involvement" class="light">
     <div class="container">
-      <h2 class="section-title">Let's connect</h2>
-      <p class="section-sub">Open to internships and full-time roles in marketing and analytics.</p>
-      <div class="btn-row">
-        <a class="btn btn-primary" href="mailto:YOUR_EMAIL_HERE">Email me</a>
-        <a class="btn btn-ghost" href="YOUR_LINKEDIN_URL_HERE" target="_blank" rel="noopener">LinkedIn</a>
+      <div class="section-head reveal">
+        <div>
+          <span class="eyebrow"><span class="num">04</span> Involvement</span>
+          <h2>Leadership on campus.</h2>
+        </div>
+      </div>
+      <div class="timeline">
+        <article class="entry reveal">
+          <div class="when"><strong>Mar 2026 – Present</strong>Lincoln, NE</div>
+          <div>
+            <h3>Nebraska Commercial Real Estate</h3>
+            <div class="role">Founding Member</div>
+            <ul>
+              <li>Help establish and promote a new commercial real estate organization, contributing to its rapid growth through outreach to students across academic and Greek organizations.</li>
+              <li>Engage with commercial real estate professionals through networking and speaking events to develop knowledge of real estate investment, financial analysis, and business strategy.</li>
+              <li>Build professional relationships with industry professionals and peers while representing the organization at campus events.</li>
+            </ul>
+          </div>
+        </article>
+        <article class="entry reveal">
+          <div class="when"><strong>Apr 2024 – Present</strong>Lincoln, NE</div>
+          <div>
+            <h3>Delta Tau Delta</h3>
+            <div class="role">Member</div>
+            <ul>
+              <li>Support 3+ philanthropy events by coordinating fundraising efforts and selling 5+ tickets per event to support JDRF and Lincoln Veteran Affairs.</li>
+              <li>Serve on the ritual education team, helping prepare and present ceremonies for the formal initiation of 31 new members.</li>
+              <li>Participate in weekly chapter meetings and contribute to discussions regarding chapter initiatives, events, and organizational improvement.</li>
+            </ul>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section id="contact" class="cta">
+    <div class="container">
+      <div class="reveal">
+        <h2>Let's work together.</h2>
+        <p>Open to internships and full-time roles in marketing and analytics.<br>Reach me at <a class="email" href="mailto:mkuryla2005@gmail.com">mkuryla2005@gmail.com</a></p>
+      </div>
+      <div class="btn-row reveal">
+        <a class="btn btn-dark" href="mailto:mkuryla2005@gmail.com">Email me</a>
+        <a class="btn btn-outline-dark" href="https://www.linkedin.com/in/matthew-kuryla/" target="_blank" rel="noopener">LinkedIn ↗</a>
       </div>
     </div>
   </section>
 
   <footer>
-    <div class="container">© <span id="year"></span> Matthew Kuryla</div>
+    <div class="container">
+      <div>© <span class="year"></span> Matthew Kuryla</div>
+      <div class="foot-links">
+        <a href="projects.html">Projects</a>
+        <a href="mailto:mkuryla2005@gmail.com">Email</a>
+        <a href="https://www.linkedin.com/in/matthew-kuryla/" target="_blank" rel="noopener">LinkedIn</a>
+      </div>
+    </div>
   </footer>
 
-  <script>document.getElementById("year").textContent = new Date().getFullYear();</script>
+  <script src="games.js"></script>
+  <script src="projects.js"></script>
 </body>
 </html>

@@ -5,53 +5,75 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Projects · Matthew Kuryla</title>
   <meta name="description" content="Roblox games Matthew Kuryla has worked on, with live player counts and all-time plays.">
+  <meta name="theme-color" content="#070d1f">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <nav class="nav">
     <div class="container">
-      <a class="brand" href="index.html">Matthew Kuryla</a>
+      <a class="brand" href="index.html"><span class="mono">MK</span><span class="name">Matthew Kuryla</span></a>
       <div class="nav-links">
-        <a href="index.html">Resume</a>
         <a href="projects.html" class="active">Projects</a>
-        <a href="index.html#contact">Contact</a>
+        <a href="index.html#experience">Experience</a>
+        <a href="index.html#skills">Skills</a>
+        <a class="btn btn-primary" href="index.html#contact">Get in touch</a>
       </div>
     </div>
   </nav>
 
-  <header class="hero" style="padding-bottom: 32px;">
+  <header class="hero page-hero">
+    <div class="hero-bg" id="hero-bg" aria-hidden="true"></div>
     <div class="container">
-      <span class="eyebrow">Roblox Projects</span>
-      <h1>Games I've worked on</h1>
-      <p class="lead">A selection of Roblox games I've helped build, grow, and monetize, ranked by live player count and then all-time plays.</p>
+      <span class="eyebrow">Roblox projects</span>
+      <h1>Games I've worked on.</h1>
+      <p class="lead" style="margin-top: 22px;">Ranked live by players online right now, then by all-time plays.</p>
+      <div class="counter-row">
+        <div class="counter">
+          <div class="stat-label"><span class="live-dot off total-dot"></span>Total all-time plays</div>
+          <div class="stat-num" data-total="visits">0</div>
+        </div>
+        <div class="counter">
+          <div class="stat-label"><span class="live-dot off total-dot"></span>Playing right now</div>
+          <div class="stat-num" data-total="playing">0</div>
+        </div>
+      </div>
+      <div class="live-note" id="live-note"><span class="live-dot off"></span>Connecting to Roblox…</div>
     </div>
   </header>
 
-  <section style="padding-top: 0;">
+  <section style="padding-top: 24px;">
     <div class="container">
-      <div class="live-panel">
-        <div class="card live-box">
-          <div class="label"><span class="live-dot off"></span>Total all-time plays</div>
-          <div class="big" id="total-visits">0</div>
-        </div>
-        <div class="card live-box">
-          <div class="label"><span class="live-dot off"></span>Playing right now</div>
-          <div class="big" id="total-playing">0</div>
-        </div>
+      <div class="games-grid" id="games" data-featured></div>
+    </div>
+  </section>
+
+  <section class="cta">
+    <div class="container">
+      <div>
+        <h2>Let's work together.</h2>
+        <p>Open to internships and full-time roles in marketing and analytics.<br>Reach me at <a class="email" href="mailto:mkuryla2005@gmail.com">mkuryla2005@gmail.com</a></p>
       </div>
-      <p class="updated" id="updated">Loading live stats…</p>
-      <div class="games" id="games"></div>
+      <div class="btn-row">
+        <a class="btn btn-dark" href="mailto:mkuryla2005@gmail.com">Email me</a>
+        <a class="btn btn-outline-dark" href="https://www.linkedin.com/in/matthew-kuryla/" target="_blank" rel="noopener">LinkedIn ↗</a>
+      </div>
     </div>
   </section>
 
   <footer>
-    <div class="container">© <span id="year"></span> Matthew Kuryla</div>
+    <div class="container">
+      <div>© <span class="year"></span> Matthew Kuryla</div>
+      <div class="foot-links">
+        <a href="index.html">Resume</a>
+        <a href="mailto:mkuryla2005@gmail.com">Email</a>
+        <a href="https://www.linkedin.com/in/matthew-kuryla/" target="_blank" rel="noopener">LinkedIn</a>
+      </div>
+    </div>
   </footer>
 
-  <script>document.getElementById("year").textContent = new Date().getFullYear();</script>
   <script src="games.js"></script>
   <script src="projects.js"></script>
 </body>
